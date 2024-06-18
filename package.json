@@ -1,0 +1,19 @@
+{
+  "name": "Whatsappweb-js",
+  "version": "1.0.0",
+  "description": "intended to run and spamming healthcheck through whatsapp",
+  "main": "main.js",
+  "dependencies": {
+    "luxon": "^3.4.4",
+    "node-cron": "^3.0.3",
+    "puppeteer": "^22.11.1",
+    "qr-image": "^3.2.0",
+    "whatsapp-web.js": "^1.23.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "author": "",
+  "license": "ISC"
+}
