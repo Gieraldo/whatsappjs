@@ -16,35 +16,37 @@ Whatsappweb-js is a Node.js application intended to run and spam health checks t
 
 Clone the repository and install the necessary dependencies:
 
-git clone https://github.com/your-username/whatsappweb-js.git
-cd whatsappweb-js
+```bash git clone https://github.com/Gieraldo/whatsappjs.git
+cd whatsappjs
 npm install
+```
 
 ## Usage
 
 Run the application using the following command:
-
+```bash
 node main.js
-
+```
 ## Configuration
 
 You can send specific groups chat in the WhatsApp by their name. Update the config.js file with the groups WhatsApp ID:
-
+```ts
 module.exports = {
 whatsapp: {
     groupName: 'your-group'
   }
 };
+```
 
 ## ScheduledTasks
 The application uses node-cron to schedule tasks. Update the cron job as necessary to match your desired schedule.
 
 ## Dependencies
-luxon - A library for working with dates and times.
-node-cron - A tool for scheduling tasks in Node.js.
-puppeteer - A Node library to control headless Chrome.
-qr-image - A library to generate QR codes.
-whatsapp-web.js - A client library to automate WhatsApp Web.
+- **luxon** - A library for working with dates and times.
+- **node-cron** - A tool for scheduling tasks in Node.js.
+- **puppeteer** - A Node library to control headless Chrome.
+- **qr-image** - A library to generate QR codes.
+- **whatsapp-web.js** - A client library to automate WhatsApp Web.
 
 ### Notes
 
