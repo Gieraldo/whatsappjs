@@ -8,7 +8,7 @@ function getProxy(current_time) {
   const output = `
 Berikut Capture Response Code pada *router-internet*
 *OCP-DC-BRImo* Jam *${formattedWIB}*
-_response code 5xx total=$1_
+_response code 5xx total=$0_
   `;
   return output;
 }

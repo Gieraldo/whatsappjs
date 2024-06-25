@@ -6,6 +6,7 @@ const puppeteer = require('puppeteer');
 const { DateTime } = require('luxon'); // Mengimpor DateTime dari Luxon
 const fs = require('fs'); // Mengimpor fs
 const cron = require('node-cron');
+require('dotenv').config(); // Memuat environment variables dari .env file
 
 // Destructure the configurations for each cluster
 const { whatsapp } = config;
@@ -26,33 +27,33 @@ cron.schedule('0 * * * *', async () => {
         const formattedTime = now.toFormat('HH:mm'); // Format jam menit
 
         // Start Puppeteer and navigate to Grafana dashboard
-        browser = await puppeteer.launch();
+        browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
         const page = await browser.newPage();
         await page.setViewport({ width: 1818, height: 460 });
 
         // Open Grafana and login
         console.log('Navigating to Grafana login page...');
-        await page.goto('https://hawkeye.bri.co.id/login', { timeout: 80000 });
+        await page.goto(process.env.URL_GRAFANA, { timeout: 80000 });
         
         // Wait for the username input to appear
         console.log('Waiting for username input...');
         await page.waitForSelector('input[name="user"]', { visible: true });
 
         console.log('Entering username...');
-        await page.type('input[name="user"]', 'admin');
+        await page.type('input[name="user"]', process.env.USER_GRAFANA);
         
         console.log('Entering password...');
-        await page.type('input[name="password"]', 'P@ssw0rd0p@');
+        await page.type('input[name="password"]', process.env.PASSWORD_GRAFANA);
         
         console.log('Submitting login form...');
         await Promise.all([
             page.waitForNavigation(), // Wait for navigation to complete
-            page.keyboard.press('Enter'), // Pres s "Enter" to submit form
+            page.keyboard.press('Enter'), // Press "Enter" to submit form
         ]);
 
         // Open the specific dashboard
         console.log('Navigating to Grafana dashboard...');
-        await page.goto('https://hawkeye.bri.co.id/d/taQlRuxik/openshift-cluster-summary?from=now-1h&orgId=1&refresh=1h&to=now&var-cluster=Prometheus-OCP-DC-BRImo&var-datasource=&var-ds=&var-namespace=brimo&var-node=');
+        await page.goto(process.env.URL_DASHBOARD);
 
         // Delay for 10 seconds (10000 milliseconds)
         console.log('Delaying for 10 seconds...');
@@ -64,7 +65,7 @@ cron.schedule('0 * * * *', async () => {
         await page.screenshot({ path: screenshotPath });
 
         // Get the proxy message
-        const proxyMessage = getProxy(formattedTime);
+        const proxyMessage = await getProxy(); // Call getProxy to fetch Prometheus data
 
         // Send the screenshot and message to the WhatsApp group
         console.log(`Sending message and screenshot to WhatsApp group: ${whatsapp.groupName}...`);
@@ -73,11 +74,11 @@ cron.schedule('0 * * * *', async () => {
 
         // Remove old screenshots, keeping only the last 2 files
         console.log('Cleaning up old screenshots...');
-        const screenshots = fs.readdirSync('.').filter(file => file.startsWith('screenshot_') && file.endsWith('.png'));
-        screenshots.sort((a, b) => fs.statSync(b).mtime.getTime() - fs.statSync(a).mtime.getTime());
+        const screenshots = fs.readdirSync('./screenshoot').filter(file => file.startsWith('screenshot_') && file.endsWith('.png'));
+        screenshots.sort((a, b) => fs.statSync(`./screenshoot/${b}`).mtime.getTime() - fs.statSync(`./screenshoot/${a}`).mtime.getTime());
 
         for (let i = 2; i < screenshots.length; i++) {
-            fs.unlinkSync(screenshots[i]);
+            fs.unlinkSync(`./screenshoot/${screenshots[i]}`);
         }
 
         // Close the Puppeteer browser session

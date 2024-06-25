@@ -4,8 +4,11 @@
   "description": "intended to run and spamming healthcheck through whatsapp",
   "main": "main.js",
   "dependencies": {
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
     "luxon": "^3.4.4",
     "node-cron": "^3.0.3",
+    "prom-client": "^15.1.2",
     "puppeteer": "^22.11.1",
     "qr-image": "^3.2.0",
     "whatsapp-web.js": "^1.23.0"

@@ -1,12 +1,21 @@
-// client/whatsappClient.js
-
 const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const fs = require('fs');
 const qr = require('qr-image');
+const path = require('path');
+
+const tempFolderPath = path.resolve('./temp');
+
+// Check if temp folder exists, if not, create it
+if (!fs.existsSync(tempFolderPath)) {
+    console.log(`Temp folder not found. Creating folder at ${tempFolderPath}`);
+    fs.mkdirSync(tempFolderPath, { recursive: true });
+} else {
+    console.log(`Temp folder found at ${tempFolderPath}`);
+}
 
 const client = new Client({
     authStrategy: new LocalAuth({
-        dataPath: './temp',
+        dataPath: tempFolderPath,
     }),
     webVersionCache: {
         type: 'remote',
